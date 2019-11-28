@@ -1,0 +1,22 @@
+{
+  "name": "workspace",
+  "version": "1.0.0",
+  "description": "fis-ms-movies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MrManoloDG/fis-ms-movies.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MrManoloDG/fis-ms-movies/issues"
+  },
+  "homepage": "https://github.com/MrManoloDG/fis-ms-movies#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
