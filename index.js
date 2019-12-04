@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const PORT = 8000 || process.env.PORT;
+const PORT = (process.env.PORT || 8000);
 const BASE_API_PATH = "/api/v1";
 const app = express();
 const movieStatus = require('./routes/movie_status');
