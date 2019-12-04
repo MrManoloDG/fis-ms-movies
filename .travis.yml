@@ -6,9 +6,9 @@ node_js:
 
 addons:
   - sonarcloud:
-    organization: "mrmanolodg"
-    token:
-      secure: $SONARCLOUD_API_KEY
+      organization: "mrmanolodg"
+      token:
+        secure: $SONARCLOUD_API_KEY
 
 script: 
   - npm test
