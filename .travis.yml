@@ -1,8 +1,16 @@
 language: node_js
 node_js:
-  - 12
+  - 9
 
-script: npm test
+addons:
+  - sonarcloud:
+    organization: "mrmanolodg"
+    token:
+      secure: $SONARCLOUD_API_KEY
+
+script: 
+  - npm test
+  - sonar-scanner
 
 deploy:
   provider: heroku
