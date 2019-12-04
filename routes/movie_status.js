@@ -96,5 +96,36 @@ router.delete('/:_id', (req,res) => {
     })
 });
 
+router.get('/user/:_id', (req,res) => {
+    console.log(Date() + " - GET /movie_status/user/:_id");
+    let id = req.params._id;
+    db.find({id_user: id}, (err,moviesStatus) => {
+        if(err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else if(moviesStatus === null){
+            res.sendStatus(404);
+        } else {
+            res.status(200).send(moviesStatus);
+        }
+    })
+});
+
+router.get('/:_id_user/:_id_movie', (req,res) => {
+    console.log(Date() + " - GET /movie_status/:_id_user/:_id_movie");
+    let user = req.params._id_user;
+    let movie = req.params._id_movie;
+    db.find({id_user: user, id_movie: movie}, (err,movieStatus) => {
+        if(err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else if(movieStatus === null){
+            res.sendStatus(404);
+        } else {
+            res.status(200).send(movieStatus);
+        }
+    })
+});
+
 
 module.exports = router
