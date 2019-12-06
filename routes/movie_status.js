@@ -1,19 +1,31 @@
 'use strict';
 
 const express = require('express');
+const bodyParser = require('body-parser');
 const router = express.Router();
-const DataStore = require('nedb');
+const mongoose = require('mongoose');
 const DB_FILENAME = __dirname + "Database/";
+const Schema = mongoose.Schema;
 
-let db = new DataStore({filename: DB_FILENAME + "movie_status", autoload:true});
+
+router.use(bodyParser);
+
+//let db = new DataStore({filename: DB_FILENAME + "movie_status", autoload:true});
+let db = mongoose.connect('mongodb://mongo:27017/', {useNewUrlParser: true});
+let movie = Schema({
+    name: String,
+    release_date: Date,
+    genre: [String]
+});
 
 router.get('/', (req,res) => {
     console.log(Date() + " - GET /movie_status");
-    db.find({},(err,moviesStatus) => {
+    movie.find({},(err,moviesStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
         } else {
+            console.log("Llego a conectar");
             res.status(200).send(moviesStatus);
         }
     });
