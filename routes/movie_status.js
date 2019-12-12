@@ -7,9 +7,6 @@ const mongoose = require('mongoose');
 const DB_FILENAME = __dirname + "Database/";
 const Schema = mongoose.Schema;
 
-
-router.use(bodyParser);
-
 //let db = new DataStore({filename: DB_FILENAME + "movie_status", autoload:true});
 mongoose.connect('mongodb://mongo:27017/', {useNewUrlParser: true});
 
@@ -25,11 +22,10 @@ db.once('open', function() {
 
 let movieSchema = Schema({
     name: String,
+    phone: String,
     release_date: Date,
     genre: [String]
 });
-
-
 
 let movie = mongoose.model('movie', movieSchema);
 
