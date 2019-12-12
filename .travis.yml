@@ -1,5 +1,4 @@
-dist: trusty
-
+sudo: required
 language: node_js
 node_js:
   - 9
@@ -10,13 +9,26 @@ addons:
       token:
         secure: $SONARCLOUD_API_KEY
 
+services:
+  - docker
+  - mongodb
+
+before_install:
+  - wget -qO- https
+
+install:
+  - npm install
+
 script: 
   - npm test
   - sonar-scanner
 
+
 deploy:
-  provider: heroku
-  api_key:
-    secure: 
-      api_key: $HEROKU_API_KEY
-      app: $HEROKU_APP_NAME
+  skip_cleanup: true
+  provider : script
+    heroku container:login
+    heroku container:push web -a $HEROKU_APP_NAME
+    heroku container:release web -a $HEROKU_APP_NAME
+
+branch: master
