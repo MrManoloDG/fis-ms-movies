@@ -11,12 +11,27 @@ const Schema = mongoose.Schema;
 router.use(bodyParser);
 
 //let db = new DataStore({filename: DB_FILENAME + "movie_status", autoload:true});
-let db = mongoose.connect('mongodb://mongo:27017/', {useNewUrlParser: true});
-let movie = Schema({
+mongoose.connect('mongodb://mongo:27017/', {useNewUrlParser: true});
+
+let db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+
+db.once('open', function() {
+    console.log("We\'re connected!");
+});
+
+
+
+let movieSchema = Schema({
     name: String,
     release_date: Date,
     genre: [String]
 });
+
+
+
+let movie = mongoose.model('movie', movieSchema);
 
 router.get('/', (req,res) => {
     console.log(Date() + " - GET /movie_status");
