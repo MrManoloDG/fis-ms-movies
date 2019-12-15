@@ -1,9 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
-
-router.use(bodyParser);
 
 class filter{
     constructor(label, value){
@@ -28,6 +24,4 @@ router.get('/', (req, res) => {
     res.sendStatus(200).send(getUrl(req.body));
 });
 
-router.get('/', (req, res) => {
-    res.sendStatus(200).send(getUrl(req.body));
-});
+module.exports = router;
