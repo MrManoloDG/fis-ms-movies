@@ -29,8 +29,9 @@ script:
 
 
 deploy:
-  skip_cleanup: true
   provider : script
+  skip_cleanup: true
+  script:
     heroku container:login
     heroku container:push web -a $HEROKU_APP_NAME
     heroku container:release web -a $HEROKU_APP_NAME
