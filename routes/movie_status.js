@@ -8,12 +8,6 @@ const DB_FILENAME = __dirname + "Database/";
 const Schema = mongoose.Schema;
 
 //let db = new DataStore({filename: DB_FILENAME + "movie_status", autoload:true});
-mongoose.connect('mongodb://mongo:27017/', {useNewUrlParser: true});
-
-let db = mongoose.connection;
-
-db.on('error', console.error.bind(console, 'connection error:'));
-
 
 let movieSchema = Schema({
     id_user: String,
