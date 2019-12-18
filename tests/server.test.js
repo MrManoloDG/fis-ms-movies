@@ -1,4 +1,4 @@
-const api = require('../index.js');
+const api = require('../server.js');
 const BASE_API_PATH = "/api/v1";
 const Movie_Api = "/movies_status";
 const supertest = require('supertest');
