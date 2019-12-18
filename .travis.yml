@@ -30,7 +30,7 @@ script:
 
 deploy:
   provider : script
-  skip_cleanup: true
+  cleanup: true
   script:
     heroku container:login;
     heroku container:push web -a $HEROKU_APP_NAME;
