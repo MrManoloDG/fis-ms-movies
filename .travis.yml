@@ -33,7 +33,7 @@ deploy:
   cleanup: false
   script:
     heroku container:login;
-    heroku container:push web -a $HEROKU_APP_NAME;
-    heroku container:release web -a $HEROKU_APP_NAME;
+    heroku container:push web -a fis-ms-movies;
+    heroku container:release web -a fis-ms-movies;
   on:
     branch: master
