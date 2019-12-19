@@ -30,8 +30,9 @@ script:
 
 deploy:
   provider : script
-  cleanup: false
+  cleanup: true
   script:
+    heroku keys:add $HEROKU_API_KEY;
     heroku container:login;
     heroku container:push web -a $HEROKU_APP_NAME;
     heroku container:release web -a $HEROKU_APP_NAME;
