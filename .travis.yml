@@ -32,8 +32,7 @@ deploy:
   provider : script
   cleanup: true
   script:
-    heroku login;
+    docker login --username=$HEROKU_USERNAME --password=$HEROKU_API_KEY registry.heroku.com
     heroku container:push web -a $HEROKU_APP_NAME;
     heroku container:release web -a $HEROKU_APP_NAME;
-
 branch: master
