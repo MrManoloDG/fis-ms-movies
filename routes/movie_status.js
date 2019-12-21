@@ -22,7 +22,7 @@ router.get('/', (req,res) => {
 router.post('/', (req,res) => {
     console.log(Date() + " - POST /movie_status");
     let movieStatus = req.body;
-    db.insert(movieStatus, (err) => {
+    movie.create(movieStatus, (err) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -34,7 +34,7 @@ router.post('/', (req,res) => {
 
 router.delete('/', (req,res) => {
     console.log(Date() + " - DELETE /movie_status");
-    db.remove({},{multi:true}, (err,nrem) => {
+    movie.delete({},{multi:true}, (err,nrem) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -49,7 +49,7 @@ router.delete('/', (req,res) => {
 router.get('/:_id', (req,res) => {
     console.log(Date() + " - GET /movie_status/:_id");
     let id = req.params._id;
-    db.find({_id: id}, (err,movieStatus) => {
+    movie.find({_id: id}, (err,movieStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -65,7 +65,7 @@ router.put('/:_id', (req,res) => {
     console.log(Date() + " - PUT /movie_status/:_id");
     let id = req.params._id;
     let movieStatus = req.body;
-    db.update({_id: id}, movieStatus, (err, nrep) => {
+    movie.update({_id: id}, movieStatus, (err, nrep) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -82,7 +82,7 @@ router.put('/:_id', (req,res) => {
 router.delete('/:_id', (req,res) => {
     console.log(Date() + " - DELETE /movie_status/:_id");
     let id = req.params._id;
-    db.remove({},{multi:true}, (err,nrem) => {
+    movie.delete({},{multi:true}, (err,nrem) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -99,7 +99,7 @@ router.delete('/:_id', (req,res) => {
 router.get('/user/:_id', (req,res) => {
     console.log(Date() + " - GET /movie_status/user/:_id");
     let id = req.params._id;
-    db.find({id_user: id}, (err,moviesStatus) => {
+    movie.find({id_user: id}, (err,moviesStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -113,9 +113,9 @@ router.get('/user/:_id', (req,res) => {
 
 router.get('/:_id_user/:_id_movie', (req,res) => {
     console.log(Date() + " - GET /movie_status/:_id_user/:_id_movie");
-    let user = req.params._id_user;
-    let movie = req.params._id_movie;
-    db.find({id_user: user, id_movie: movie}, (err,movieStatus) => {
+    let user_param = req.params._id_user;
+    let movie_param = req.params._id_movie;
+    movie.find({id_user: user_param, id_movie: movie_param}, (err,movieStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
