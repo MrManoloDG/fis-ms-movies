@@ -1,5 +1,5 @@
 const api = require('../index.js');
-const movie = require('../movie');
+const movie = require('../models/movie');
 const BASE_API_PATH = "/api/v1";
 const Movie_Api = "/movies_status";
 const supertest = require('supertest');
