@@ -4,25 +4,26 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const router = express.Router();
 const mongoose = require('mongoose');
-const DB_FILENAME = __dirname + "Database/";
-const Schema = mongoose.Schema;
+const dbConnect = require('../db');
+const movie = require('../movie');
 
-//let db = new DataStore({filename: DB_FILENAME + "movie_status", autoload:true});
-
-let movieSchema = Schema({
-    id_user: String,
-    id_movie: String,
-    status: String,
-    release_date: Date,
-    genre: [String]
+router.get('/', (req,res) => {
+    console.log(Date() + " - GET /movie_status");
+    movie.find({},(err,moviesStatus) => {
+        if(err) {
+            console.log(Date() + " - " + err);
+            res.sendStatus(500);
+        } else {
+            res.status(200).send(moviesStatus);
+        }
+    });
 });
-
-let movie = mongoose.model('movie', movieSchema);
 
 router.post('/', (req,res) => {
     console.log(Date() + " - POST /movie_status");
     let movieStatus = req.body;
     movieStatus['release_date'] = new Date();
+
     movie.create(movieStatus, (err) => {
         if(err) {
             console.log(Date() + " - " + err);
@@ -36,6 +37,7 @@ router.post('/', (req,res) => {
 router.delete('/', (req,res) => {
     console.log(Date() + " - DELETE /movie_status");
     movie.remove({},{multi:true}, (err,nrem) => {
+
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -114,9 +116,9 @@ router.get('/user/:_id', (req,res) => {
 
 router.get('/:_id_user/:_id_movie', (req,res) => {
     console.log(Date() + " - GET /movie_status/:_id_user/:_id_movie");
-    let user = req.params._id_user;
-    let movieId = req.params._id_movie;
-    movie.find({id_user: user, id_movie: movieId}, (err,movieStatus) => {
+    let user_param = req.params._id_user;
+    let movie_param = req.params._id_movie;
+    movie.find({id_user: user_param, id_movie: movie_param}, (err,movieStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
