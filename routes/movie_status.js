@@ -22,12 +22,15 @@ router.get('/', (req,res) => {
 router.post('/', (req,res) => {
     console.log(Date() + " - POST /movie_status");
     let movieStatus = req.body;
-    movieStatus['release_date'] = new Date();
-
+    movieStatus['status_date'] = new Date();
     movie.create(movieStatus, (err) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            if(err.name == 'ValidationError'){
+                res.sendStatus(400);
+            } else {
+                res.sendStatus(500);
+            }
         } else {
             res.sendStatus(201);
         }
@@ -68,6 +71,7 @@ router.put('/:_id', (req,res) => {
     console.log(Date() + " - PUT /movie_status/:_id");
     let id = req.params._id;
     let movieStatus = req.body;
+        movieStatus['status_date'] = new Date();
     movie.update({_id: id}, movieStatus, (err, nrep) => {
         if(err) {
             console.log(Date() + " - " + err);
