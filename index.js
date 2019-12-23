@@ -1,5 +1,6 @@
 const app = require('./server.js');
 const dbConnect = require('./db');
+require('dotenv').config();
 
 var port = (process.env.PORT || 8000);
 

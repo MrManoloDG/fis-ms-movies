@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const api_key = process.env.API_KEY_TMDB;
 
 class filter{
     constructor(label, value){
