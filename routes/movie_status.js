@@ -40,7 +40,6 @@ router.post('/', (req,res) => {
 router.delete('/', (req,res) => {
     console.log(Date() + " - DELETE /movie_status");
     movie.remove({},{multi:true}, (err,nrem) => {
-
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -89,7 +88,8 @@ router.put('/:_id', (req,res) => {
 router.delete('/:_id', (req,res) => {
     console.log(Date() + " - DELETE /movie_status/:_id");
     let id = req.params._id;
-    movie.remove({},{multi:true}, (err,nrem) => {
+    movie.remove({_id : id},{multi:true}, (err,nrem) => {
+        console.log("Llego delete");
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
