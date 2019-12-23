@@ -10,7 +10,7 @@ class filter{
     display(){
         return this.label + "=" + this.value;
     }
-};
+}
 
 function getUrl(filters, uri = ""){
     if(filters.length == 1)

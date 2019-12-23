@@ -22,6 +22,8 @@ router.get('/', (req,res) => {
 router.post('/', (req,res) => {
     console.log(Date() + " - POST /movie_status");
     let movieStatus = req.body;
+    movieStatus['release_date'] = new Date();
+
     movie.create(movieStatus, (err) => {
         if(err) {
             console.log(Date() + " - " + err);
@@ -34,13 +36,14 @@ router.post('/', (req,res) => {
 
 router.delete('/', (req,res) => {
     console.log(Date() + " - DELETE /movie_status");
-    movie.delete({},{multi:true}, (err,nrem) => {
+    movie.remove({},{multi:true}, (err,nrem) => {
+
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
         } else {
             res.status(200).send({
-                msg: nrem + ' Movies Status deleted!'
+                msg:'All Movies Status deleted!'
             });
         }
     })
@@ -82,7 +85,7 @@ router.put('/:_id', (req,res) => {
 router.delete('/:_id', (req,res) => {
     console.log(Date() + " - DELETE /movie_status/:_id");
     let id = req.params._id;
-    movie.delete({},{multi:true}, (err,nrem) => {
+    movie.remove({},{multi:true}, (err,nrem) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);

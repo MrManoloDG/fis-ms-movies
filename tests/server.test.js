@@ -1,11 +1,10 @@
-const api = require('../index.js');
+const api = require('../server.js');
 const movie = require('../models/movie');
 const BASE_API_PATH = "/api/v1";
 const Movie_Api = "/movies_status";
 const supertest = require('supertest');
 const movie_api_path = BASE_API_PATH + Movie_Api;
 const app = require('../index');
-
 const routes = require('../routes/movie_status'); 
 
 let dbFind, dbPost, dbPut, dbDelete;
@@ -185,4 +184,3 @@ describe("Movies API tests", () => {
     });
 
 });
-

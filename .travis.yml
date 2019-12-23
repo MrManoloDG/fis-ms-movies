@@ -14,21 +14,26 @@ services:
   - mongodb
 
 before_install:
-  - wget -qO- https
+  - wget -qO- https://toolbelt.heroku.com/install.sh | sh
 
 install:
   - npm install
 
+before_script:
+  - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
+
 script: 
   - npm test
   - sonar-scanner
+  - docker build -t fis-ms-movies .
 
 
 deploy:
-  skip_cleanup: true
   provider : script
-    heroku container:login
-    heroku container:push web -a $HEROKU_APP_NAME
-    heroku container:release web -a $HEROKU_APP_NAME
-
-branch: master
+  cleanup: false
+  script:
+    heroku container:login;
+    heroku container:push web -a fis-ms-movies;
+    heroku container:release web -a fis-ms-movies;
+  on:
+    branch: master
