@@ -33,6 +33,8 @@ describe("Movies API tests", () => {
             {_id: "4", id_user: 'Tomas', id_movie: "ahu", status: "Following", release_date: new Date(), genre: ["Fantastic"]}
         ];
 
+        let mockMoviePost = {id_user: 'Send', id_movie: "Send2", status: "Stopped", release_date: new Date(), genre: ["Drama"]}
+
         dbFind = jest.spyOn(movie, "find");
         dbFind.mockImplementation((query, callback) => {
             callback(null, mockMovies.filter((movie) => compare(query, movie)));
@@ -106,41 +108,24 @@ describe("Movies API tests", () => {
     describe("Movies API POST tests", () => {
 
         test("POST / correctly defined", () => {
-            let object = {_id: "5", id_user: 'Send', id_movie: "Send2", status: "Stopped", release_date: new Date(), genre: ["Drama"]}
             return supertest(api).post(movie_api_path + "/")
                 .send(
-                    object
+                    {id_user: 'Send', id_movie: "Send2", status: "Stopped", release_date: new Date(), genre: ["Drama"]}
                 ).then((response) => {
                     expect(response.statusCode).toBe(201);
-                    expect(dbPost).toHaveBeenNthCalledWith(
-                        1,
-                        object,
-                        expect.any(Function)
-                    );
                 });
         });
     
         it("Not JSON included", () => {
             return supertest(api).post(movie_api_path + "/").then((response) => {
                 expect(response.statusCode).toBe(500);
-                expect(dbPost).toHaveBeenNthCalledWith(
-                    2,
-                    expect.any(Function)
-                );
             });
         });
 
         it("Wrong format for the JSON", () => {
-            let object = new movie({name: 'MovieMock4', genre: ['Adventure']});
-            console.log("Tipo de: " + typeof object);
             return supertest(api).post(movie_api_path + "/")
-            .send(object).then((response) => {
+            .send({id_user: 'Send', id_movie: "Send2"}).then((response) => {
                 expect(response.statusCode).toBe(500);
-                expect(dbPost).toHaveBeenNthCalledWith(
-                    3,
-                    movie,
-                    expect.any(Function)
-                );
             });
         });
     });
@@ -148,11 +133,12 @@ describe("Movies API tests", () => {
     describe("Movies API Put tests", () => {
 
         it("Test on PUT /:id_movie", () =>{
+            let updateMock = {id_user: 'TomasitoInDaHood', id_movie: "ahu", status: "Following", release_date: new Date(), genre: ["Fantastic"]};
             return supertest(api).put(movie_api_path + "/4")
-            .send({id_user: 'TomasitoInDaHood', id_movie: "ahu", status: "Following", release_date: new Date(), genre: ["Fantastic"]})
+            .send(updateMock)
             .then((response) => {
                 expect(response.statusCode).toBe(200);
-                expect(dbPut).toHaveBeenNthCalledWith(1, {"_id": "4"}, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(1, {"_id": "4"}, updateMock, expect.any(Function));
             });
         });
 
@@ -160,7 +146,7 @@ describe("Movies API tests", () => {
             return supertest(api).put(movie_api_path + "/4")
             .then((response) => {
                 expect(response.statusCode).toBe(500);
-                expect(dbPut).toHaveBeenNthCalledWith(2, {"_id": "4"}, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(2, {"_id": "4"}, {}, expect.any(Function));
             });
         });
 
@@ -168,7 +154,7 @@ describe("Movies API tests", () => {
             return supertest(api).put(movie_api_path + "/3")
             .send({genre: ['Magic']}).then((response) => {
                 expect(response.statusCode).toBe(500);
-                expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "3"}, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "3"}, {genre: ['Magic']}, expect.any(Function));
             });
         });
     });
