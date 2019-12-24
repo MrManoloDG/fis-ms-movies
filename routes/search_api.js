@@ -1,37 +1,57 @@
 const express = require('express');
 const router = express.Router();
 const urljoin = require('url-join');
-const request = require('request-promise').defaults({json: true});
+const request = require('request-promise-native').defaults({json: true});
 
 class TMDBResource {
-    
-    static TMDBResource(url) {
-        const tmdbServer = process.env.TMDB_URL;
-        return urljoin(tmdbServer, url);
+    // Urls are of type String[]. The function is meant to merge all the fragments for the TMDB API url.
+    // The following method is just an implementation of the adapter pattern.
+    static URLJoin(urls){
+        return urljoin(urls);
     }
 
-    static requestHeaders(){
-        const tmdb_key = process.env.API_KEY_TMDB;
-        return {
-            api_key : tmdb_key
-        }
-    }
-
-    static getRequest(urlPartToAdd){
-        const url = TMDBResource.TMDBResource(urlPartToAdd);
-        const options = {
-            headers: TMDBResource.request()
-        }
-
+    static getRequest(url, options = {}){
         return request.get(url, options);
     }
 
+    static getTMDBResourceSearch(){
+        return process.env.TMDB_URL_SEARCH;
+    }
+
+    static getTMDBResourceID(){
+        return process.env.TMDB_URL_ID;
+    }
+
+    static getApiKey(){
+        return "?api_key=" + process.env.API_KEY_TMDB;
+    }
+
+    static languageTMDB(){
+        return "&language=es";
+    }
+
     static getMovie(id) {
-        return this.getRequest("/" + id + "/" + "?language=es");
+        console.log("ID: " + id);
+        const idString = "/" + id;
+        const urls = [
+            this.getTMDBResourceID(),
+            idString,
+            this.getApiKey(),
+            this.languageTMDB()
+        ];
+        console.log(this.URLJoin(urls));
+        return this.getRequest(this.URLJoin(urls));
     }
 
     static searchMovies(filterOptions){
-        return this.getRequest("?language=es" + filterOptions);
+        filterOptions = filterOptions + "";
+        const urls = [
+            this.getTMDBResourceSearch(),
+            this.getApiKey(),
+            this.languageTMDB(),
+            filterOptions
+        ];
+        return this.getRequest(this.URLJoin(urls));
     }
 }
 
@@ -76,7 +96,8 @@ router.get('/', (req, res) => {
 
 router.get('/:_id', (req, res) => {
     console.log(Date() + "\tGet Movie Api");
-    TMDBResource.getMovie(req.param._id)
+    console.log("Req.params._id" + req.params._id);
+    TMDBResource.getMovie(req.params._id)
         .then((body) => {
             res.send(body);
         }).catch((err) => {
