@@ -2,9 +2,9 @@
   "name": "workspace",
   "version": "1.0.0",
   "description": "fis-ms-movies",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node index.js",
     "test": "jest --detectOpenHandles"
   },
   "repository": {
