@@ -14,7 +14,6 @@ class TMDBResource {
         return request.get(url, options);
     }
 
-
     /*
     The two following methods may seem identical, however the TMDB API's URL is different is you are searching movies
     by attributes(first method) or looking for an specific movie by the ID(second method).
@@ -25,6 +24,10 @@ class TMDBResource {
 
     static getTMDBResourceID(){
         return process.env.TMDB_URL_ID;
+    }
+
+    static getTMDBResourceDiscover(){
+        return process.env.TMDB_URL_DISCOVER;
     }
 
     static getApiKey(){
@@ -53,28 +56,19 @@ class TMDBResource {
             this.languageTMDB(),
             String(searchEntries)
         ];
-        console.log(String(searchEntries));
-        console.log(this.URLJoin(urls));
+        return this.getRequest(this.URLJoin(urls));
+    }
+
+    static discoverMovies(searchEntries){
+        const urls = [
+            this.getTMDBResourceDiscover(),
+            this.getApiKey(),
+            this.languageTMDB(),
+            String(searchEntries)
+        ];
         return this.getRequest(this.URLJoin(urls));
     }
 }
-
-
-/*
-This class is meant to merge all the filters stored, so the can be included in the url for the TMDB API.
-Each element is supposed to have a key and value linked to the former. The keys are supposed to be provided
-by the frontend, being the values the ones introduced by the user.
-*/
-/*class filter{
-    constructor(label, value){
-        this.label = label;
-        this.value = value;
-    }
-
-    display(){
-        return this.label + "=" + this.value;
-    }
-}*/
 
 /*
 *   This method is the one that merges all the query parameters options choosed or filled by the user.
@@ -100,6 +94,20 @@ router.get('/', (req, res) => {
         });
 });
 
+router.get('/discover', (req, res) => {
+    console.log(Date() + "\tGet Movie Api Discover");
+    const query_params = req.query;
+    const searchEntries = getUrl(query_params).replace(" ", "+");
+    console.log(searchEntries);
+    TMDBResource.discoverMovies(searchEntries)
+        .then((body) => {
+            res.send(body);
+        }).catch((err) => {
+            console.log("Date : " + Date() + "-" + err + "-");
+            res.sendStatus(500);
+        });
+});
+
 router.get('/:_id', (req, res) => {
     console.log(Date() + "\tGet Movie Api");
     TMDBResource.getMovie(req.params._id)
@@ -109,17 +117,6 @@ router.get('/:_id', (req, res) => {
             console.log("Date : " + Date() + "-" + err + "-");
             res.sendStatus(500);
         });
-});
-
-router.get('/discover', (req, res) => {
-    /*console.log(Date() + "\tGet Movie Api");
-    TMDBResource.getMovie(req.params._id)
-        .then((body) => {
-            res.send(body);
-        }).catch((err) => {
-            console.log("Date : " + Date() + "-" + err + "-");
-            res.sendStatus(500);
-        });*/
 });
 
 module.exports = router;
