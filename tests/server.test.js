@@ -27,10 +27,10 @@ describe("Movies API tests", () => {
 
     beforeAll((done) => {
         let mockMovies = [
-            {_id: "1", id_user: 'Juanito', id_movie: "abc2", status: "Completed", status_date: new Date(), genre: ["Action", "Adventure"]},
-            {_id: "2", id_user: 'Huele', id_movie: "bc4", status: "Watching", status_date: new Date(), genre: ["Action"]},
-            {_id: "3", id_user: 'Ana', id_movie: "killo", status: "Pending", status_date: new Date(), genre: ["Comedy"]},
-            {_id: "4", id_user: 'Tomas', id_movie: "ahu", status: "Following", status_date: new Date(), genre: ["Fantastic"]}
+            {"_id": "1", "id_user": "Juanito", "id_movie": "abc2", "status": "Completed", "status_date": new Date(), "genre": ["Action", "Adventure"]},
+            {"_id": "2", "id_user": "Huele", "id_movie": "bc4", "status": "Watching", "status_date": new Date(), "genre": ["Action"]},
+            {"_id": "3", "id_user": "Ana", "id_movie": "killo", "status": "Pending", "status_date": new Date(), "genre": ["Comedy"]},
+            {"_id": "5e05f9d5748cdf0bf5b311a7", "id_user": "Tomas", "id_movie": "ahu", "status": "Following", "status_date": new Date(), "genre": ["Fantastic"]}
         ];
 
         dbFind = jest.spyOn(movie, "find");
@@ -72,7 +72,7 @@ describe("Movies API tests", () => {
             return supertest(api).get(movie_api_path + "/5").then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toBeArrayOfSize(0);
-                expect(dbFind).toHaveBeenNthCalledWith(2, {_id: "5"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(2, {"_id": "5"}, expect.any(Function));
             });
         });
 
@@ -80,7 +80,7 @@ describe("Movies API tests", () => {
             return supertest(api).get(movie_api_path + "/user/Ana").then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toBeArrayOfSize(1);
-                expect(dbFind).toHaveBeenNthCalledWith(3, {id_user: "Ana"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(3, {"id_user": "Ana"}, expect.any(Function));
             });
         });
 
@@ -88,14 +88,14 @@ describe("Movies API tests", () => {
             return supertest(api).get(movie_api_path + "/user/casi").then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toBeArrayOfSize(0);
-                expect(dbFind).toHaveBeenNthCalledWith(4, {id_user: "casi"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(4, {"id_user": "casi"}, expect.any(Function));
             });
         });
 
         it("Test to movie GET /:_id_user/:id_movie", () => {
             return supertest(api).get(movie_api_path + "/Ana/killo").then((response) => {
                 expect(response.statusCode).toBe(200);
-                expect(dbFind).toHaveBeenNthCalledWith(5, {id_user: "Ana", id_movie: "killo"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(5, {"id_user": "Ana", "id_movie": "killo"}, expect.any(Function));
                 expect(response.body).toBeArrayOfSize(1);
             });
         });
@@ -129,12 +129,12 @@ describe("Movies API tests", () => {
     describe("Movies API Put tests", () => {
 
         it("Test on PUT /:id_movie", () =>{
-            let updateMock = {id_user: 'TomasitoInDaHood', id_movie: "ahu", status: "Following", status_date: new Date(), genre: ["Fantastic"]};
-            return supertest(api).put(movie_api_path + "/4")
+            let updateMock = {"id_user": "TomasitoInDaHood", "id_movie": "ahu", "status": "Following", "status_date": new Date(), "genre": ["Fantastic"]};
+            return supertest(api).put(movie_api_path + "/5e05f9d5748cdf0bf5b311a7")
             .send(updateMock)
             .then((response) => {
                 expect(response.statusCode).toBe(200);
-                //expect(dbPut).toHaveBeenNthCalledWith(1, {"_id": "4"}, updateMock, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(1, {"_id": "5e05f9d5748cdf0bf5b311a7"}, updateMock[status_date] = expect.any(Date), expect.any(Function));
             });
         });
 
@@ -142,7 +142,7 @@ describe("Movies API tests", () => {
             return supertest(api).put(movie_api_path + "/3")
             .send({genre: ['Magic']}).then((response) => {
                 expect(response.statusCode).toBe(200);
-                //expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "3"}, {genre: ['Magic']}, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(2, {"_id": "3"}, {genre: ['Magic'], status_date: expect.any(Date)}, expect.any(Function));
             });
         });
 
@@ -158,7 +158,7 @@ describe("Movies API tests", () => {
             return supertest(api).put(movie_api_path + "/4")
             .then((response) => {
                 expect(response.statusCode).toBe(500);
-                //expect(dbPut).toHaveBeenNthCalledWith(2, {"_id": "4"}, {}, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "4"}, {status_date: expect.any(Date)}, expect.any(Function));
             });
         });
     });

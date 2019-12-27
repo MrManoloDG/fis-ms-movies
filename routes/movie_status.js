@@ -71,7 +71,9 @@ router.put('/:_id', (req,res) => {
     let id = req.params._id;
     let movieStatus = req.body;
         movieStatus['status_date'] = new Date();
+    console.log("Llego 1");
     movie.update({_id: id}, movieStatus, (err, nrep) => {
+        console.log("Llego 2");
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -80,7 +82,7 @@ router.put('/:_id', (req,res) => {
         } else {
             res.status(200).send({
                 msg: 'Movie Status updated!'
-            })
+            });
         }
     });
 });
@@ -98,7 +100,7 @@ router.delete('/:_id', (req,res) => {
         } else {
             res.status(200).send({
                 msg: 'Movie Status deleted!'
-            })
+            });
         }
     })
 });
