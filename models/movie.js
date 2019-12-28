@@ -17,8 +17,7 @@ let movieSchema = Schema({
     status_date: {
         type: Date,
         required: true
-    },
-    genre: [String]
+    }
 });
 
 let movie = mongoose.model('movie', movieSchema);

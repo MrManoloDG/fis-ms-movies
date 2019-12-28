@@ -70,10 +70,9 @@ router.put('/:_id', (req,res) => {
     console.log(Date() + " - PUT /movie_status/:_id");
     let id = req.params._id;
     let movieStatus = req.body;
-        movieStatus['status_date'] = new Date();
-    console.log("Llego 1");
-    movie.update({_id: id}, movieStatus, (err, nrep) => {
-        console.log("Llego 2");
+    movieStatus['status_date'] = new Date();
+    delete movieStatus._id;
+    movie.updateOne({_id: id }, {$set:movieStatus}, (err, nrep) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -90,8 +89,7 @@ router.put('/:_id', (req,res) => {
 router.delete('/:_id', (req,res) => {
     console.log(Date() + " - DELETE /movie_status/:_id");
     let id = req.params._id;
-    movie.remove({_id : id},{multi:true}, (err,nrem) => {
-        console.log("Llego delete");
+    movie.deleteOne({_id : id}, (err,nrem) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);

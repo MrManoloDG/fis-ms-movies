@@ -6,9 +6,10 @@ const app = express();
 const movieStatus = require('./routes/movie_status');
 const search_api = require('./routes/search_api');
 const dbConnect = require('./db');
+const cors = require('cors');
 
 app.use(bodyParser.json());
-
+app.use(cors());
 
 /* Routes */
 app.use(BASE_API_PATH +'/movies_status',movieStatus);
