@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 const mongoose = require('mongoose');
 const dbConnect = require('../db');
-const movie = require('../movie');
+const movie = require('../models/movie');
 
 router.get('/', (req,res) => {
     console.log(Date() + " - GET /movie_status");
