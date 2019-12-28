@@ -56,8 +56,6 @@ class TMDBResource {
             TMDBResource.languageTMDB(),
             String(searchEntries)
         ];
-        console.log(urls);
-        console.log(TMDBResource.URLJoin(urls));
         return TMDBResource.getRequest(TMDBResource.URLJoin(urls));
     }
 
@@ -93,6 +91,7 @@ router.get('/', (req, res) => {
             "msg": "This method needs a query attribute to operate. In case you do not have name, use the discovery operator"
         });
     }
+    
     else{
         TMDBResource.searchMovies(searchEntries)
         .then((body) => {

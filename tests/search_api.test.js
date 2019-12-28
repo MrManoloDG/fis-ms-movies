@@ -11,16 +11,17 @@ describe("Tests for the TMDB API: ", () => {
         await new Promise(resolve => setTimeout(() => resolve(), 500));
     });
 
-    it("Test for GET Movie by ID", () => {
+    it("Test for GET Movie by query, query not included", () => {
         return supertest(api).get(full_path + "?query=Star Wars&release_date=100").then((response) => {
             expect(response.statusCode).toBe(200);
+            expect(response.body).not.toHaveProperty("msg");
         });
     });
 
-    it("Test for GET Movie by ID", () => {
+    it("Test for GET Movie by query, query not included", () => {
         return supertest(api).get(full_path + '?release_date=100').then((response) => {
             expect(response.statusCode).toBe(500);
-            //expect(response.body).toHave(expect.any(String));
+            expect(response.body).toHaveProperty("msg");
         });
     });
 
