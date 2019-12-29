@@ -4,7 +4,6 @@ const BASE_API_PATH = "/api/v1";
 const Movie_Api = "/movies_status";
 const supertest = require('supertest');
 const movie_api_path = BASE_API_PATH + Movie_Api;
-const app = require('../index');
 const routes = require('../routes/movie_status'); 
 
 let dbFind, dbPost, dbPut, dbDelete;
@@ -27,10 +26,10 @@ describe("Movies API tests", () => {
 
     beforeAll((done) => {
         let mockMovies = [
-            {_id: "1", id_user: 'Juanito', id_movie: "abc2", status: "Completed", release_date: new Date(), genre: ["Action", "Adventure"]},
-            {_id: "2", id_user: 'Huele', id_movie: "bc4", status: "Watching", release_date: new Date(), genre: ["Action"]},
-            {_id: "3", id_user: 'Ana', id_movie: "killo", status: "Pending", release_date: new Date(), genre: ["Comedy"]},
-            {_id: "4", id_user: 'Tomas', id_movie: "ahu", status: "Following", release_date: new Date(), genre: ["Fantastic"]}
+            {"_id": "1", "id_user": "Juanito", "id_movie": "abc2", "status": "Completed", "status_date": new Date()},
+            {"_id": "2", "id_user": "Huele", "id_movie": "bc4", "status": "Watching", "status_date": new Date()},
+            {"_id": "3", "id_user": "Ana", "id_movie": "killo", "status": "Pending", "status_date": new Date()},
+            {"_id": "5e05f9d5748cdf0bf5b311a7", "id_user": "Tomas", "id_movie": "ahu", "status": "Pendiente", "status_date": new Date()}
         ];
 
         dbFind = jest.spyOn(movie, "find");
@@ -45,14 +44,12 @@ describe("Movies API tests", () => {
             callback(true);
         });
 
-        dbPut = jest.spyOn(movie, "update");
-        dbPut.mockImplementationOnce((query, callback) => {
-            callback(false);
-        }).mockImplementation((query, callback) => {
-            callback(true);
+        dbPut = jest.spyOn(movie, "updateOne");
+        dbPut.mockImplementation((query, doc, callback) => {
+            callback(false, 1);
         });
 
-        dbDelete = jest.spyOn(movie, "deleteMany");
+        dbDelete = jest.spyOn(movie, "deleteOne");
         dbDelete.mockImplementation((query, callback) => {
             callback(false);
         });
@@ -74,7 +71,7 @@ describe("Movies API tests", () => {
             return supertest(api).get(movie_api_path + "/5").then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toBeArrayOfSize(0);
-                expect(dbFind).toHaveBeenNthCalledWith(2, {_id: "5"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(2, {"_id": "5"}, expect.any(Function));
             });
         });
 
@@ -82,7 +79,7 @@ describe("Movies API tests", () => {
             return supertest(api).get(movie_api_path + "/user/Ana").then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toBeArrayOfSize(1);
-                expect(dbFind).toHaveBeenNthCalledWith(3, {id_user: "Ana"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(3, {"id_user": "Ana"}, expect.any(Function));
             });
         });
 
@@ -90,14 +87,14 @@ describe("Movies API tests", () => {
             return supertest(api).get(movie_api_path + "/user/casi").then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(response.body).toBeArrayOfSize(0);
-                expect(dbFind).toHaveBeenNthCalledWith(4, {id_user: "casi"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(4, {"id_user": "casi"}, expect.any(Function));
             });
         });
 
         it("Test to movie GET /:_id_user/:id_movie", () => {
             return supertest(api).get(movie_api_path + "/Ana/killo").then((response) => {
                 expect(response.statusCode).toBe(200);
-                expect(dbFind).toHaveBeenNthCalledWith(5, {id_user: "Ana", id_movie: "killo"}, expect.any(Function));
+                expect(dbFind).toHaveBeenNthCalledWith(5, {"id_user": "Ana", "id_movie": "killo"}, expect.any(Function));
                 expect(response.body).toBeArrayOfSize(1);
             });
         });
@@ -106,69 +103,56 @@ describe("Movies API tests", () => {
     describe("Movies API POST tests", () => {
 
         test("POST / correctly defined", () => {
-            let object = {_id: "5", id_user: 'Send', id_movie: "Send2", status: "Stopped", release_date: new Date(), genre: ["Drama"]}
             return supertest(api).post(movie_api_path + "/")
                 .send(
-                    object
+                    {id_user: 'Send', id_movie: "Send2", status: "Stopped"}
                 ).then((response) => {
                     expect(response.statusCode).toBe(201);
-                    expect(dbPost).toHaveBeenNthCalledWith(
-                        1,
-                        object,
-                        expect.any(Function)
-                    );
                 });
         });
     
         it("Not JSON included", () => {
             return supertest(api).post(movie_api_path + "/").then((response) => {
                 expect(response.statusCode).toBe(500);
-                expect(dbPost).toHaveBeenNthCalledWith(
-                    2,
-                    expect.any(Function)
-                );
             });
         });
 
         it("Wrong format for the JSON", () => {
-            let object = new movie({name: 'MovieMock4', genre: ['Adventure']});
-            console.log("Tipo de: " + typeof object);
             return supertest(api).post(movie_api_path + "/")
-            .send(object).then((response) => {
+            .send({id_user: 'Send', id_movie: "Send2"}).then((response) => {
                 expect(response.statusCode).toBe(500);
-                expect(dbPost).toHaveBeenNthCalledWith(
-                    3,
-                    movie,
-                    expect.any(Function)
-                );
             });
         });
     });
 
     describe("Movies API Put tests", () => {
-
-        it("Test on PUT /:id_movie", () =>{
-            return supertest(api).put(movie_api_path + "/4")
-            .send({id_user: 'TomasitoInDaHood', id_movie: "ahu", status: "Following", release_date: new Date(), genre: ["Fantastic"]})
+        it("Test on PUT /:_id", () =>{
+            let updateMock = { id_movie: "ahu",id_user: 'TomasitoInDaHood', status: "Following"};
+            return supertest(api).put(movie_api_path + "/3")
+            .send(updateMock)
             .then((response) => {
                 expect(response.statusCode).toBe(200);
-                expect(dbPut).toHaveBeenNthCalledWith(1, {"_id": "4"}, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(1, {"_id": "3"},  {$set: { id_movie: "ahu",id_user: 'TomasitoInDaHood', status: "Following", status_date: expect.any(Date)}} , expect.any(Function));
+            });
+        });
+
+        it("Test on PUT, not completed, should return 200", () => {
+            return supertest(api).put(movie_api_path + "/3")
+            .send({status: "Following"}).then((response) => {
+                expect(response.statusCode).toBe(200);
+                expect(dbPut).toHaveBeenNthCalledWith(2, {"_id": "3"}, {$set: {status: "Following", status_date: expect.any(Date)}}, expect.any(Function));
             });
         });
 
         it("Test on PUT no JSON", () => {
+            dbPut.mockImplementationOnce((query, callback) => {
+                callback(true);
+            });
+
             return supertest(api).put(movie_api_path + "/4")
             .then((response) => {
                 expect(response.statusCode).toBe(500);
-                expect(dbPut).toHaveBeenNthCalledWith(2, {"_id": "4"}, expect.any(Function));
-            });
-        });
-
-        it("Test on PUT wrong format", () => {
-            return supertest(api).put(movie_api_path + "/3")
-            .send({genre: ['Magic']}).then((response) => {
-                expect(response.statusCode).toBe(500);
-                expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "3"}, expect.any(Function));
+                expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "4"}, {$set: {status_date: expect.any(Date)}}, expect.any(Function));
             });
         });
     });
@@ -176,7 +160,7 @@ describe("Movies API tests", () => {
     describe("Tests on delete", () => {
 
         it("Test on Delete /:_id", () => {
-            return supertest(api).put(movie_api_path + "/1").then((response) => {
+            return supertest(api).delete(movie_api_path + "/1").then((response) => {
                 expect(response.statusCode).toBe(200);
                 expect(dbDelete).toHaveBeenNthCalledWith(1, {"_id": "1"}, expect.any(Function));
             });

@@ -22,12 +22,15 @@ router.get('/', (req,res) => {
 router.post('/', (req,res) => {
     console.log(Date() + " - POST /movie_status");
     let movieStatus = req.body;
-    movieStatus['release_date'] = new Date();
-
+    movieStatus['status_date'] = new Date();
     movie.create(movieStatus, (err) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            if(err.name == 'ValidationError'){
+                res.sendStatus(400);
+            } else {
+                res.sendStatus(500);
+            }
         } else {
             res.sendStatus(201);
         }
@@ -37,7 +40,6 @@ router.post('/', (req,res) => {
 router.delete('/', (req,res) => {
     console.log(Date() + " - DELETE /movie_status");
     movie.remove({},{multi:true}, (err,nrem) => {
-
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -68,7 +70,9 @@ router.put('/:_id', (req,res) => {
     console.log(Date() + " - PUT /movie_status/:_id");
     let id = req.params._id;
     let movieStatus = req.body;
-    movie.update({_id: id}, movieStatus, (err, nrep) => {
+    movieStatus['status_date'] = new Date();
+    delete movieStatus._id;
+    movie.updateOne({_id: id }, {$set:movieStatus}, (err, nrep) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -77,7 +81,7 @@ router.put('/:_id', (req,res) => {
         } else {
             res.status(200).send({
                 msg: 'Movie Status updated!'
-            })
+            });
         }
     });
 });
@@ -85,7 +89,7 @@ router.put('/:_id', (req,res) => {
 router.delete('/:_id', (req,res) => {
     console.log(Date() + " - DELETE /movie_status/:_id");
     let id = req.params._id;
-    movie.remove({},{multi:true}, (err,nrem) => {
+    movie.deleteOne({_id : id}, (err,nrem) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
@@ -94,7 +98,7 @@ router.delete('/:_id', (req,res) => {
         } else {
             res.status(200).send({
                 msg: 'Movie Status deleted!'
-            })
+            });
         }
     })
 });
