@@ -75,6 +75,14 @@ describe("Movies API tests", () => {
             });
         });
 
+        /*it("Test to movie GET /:_id, not ID found", () => {
+            return supertest(api).get(movie_api_path + "/5").then((response) => {
+                expect(response.statusCode).toBe(404);
+                expect(response.body).toBeArrayOfSize(0);
+                expect(dbFind).toHaveBeenNthCalledWith(2, {"_id": "5"}, expect.any(Function));
+            });
+        });*/
+
         it("Test to movie GET /user/:id_movie", () => {
             return supertest(api).get(movie_api_path + "/user/Ana").then((response) => {
                 expect(response.statusCode).toBe(200);
@@ -91,6 +99,14 @@ describe("Movies API tests", () => {
             });
         });
 
+        /*it("Test to movie GET /user/:id_movie, not movie found", () => {
+            return supertest(api).get(movie_api_path + "/user/casi").then((response) => {
+                expect(response.statusCode).toBe(404);
+                expect(response.body).toBeArrayOfSize(0);
+                expect(dbFind).toHaveBeenNthCalledWith(4, {"id_user": "casi"}, expect.any(Function));
+            });
+        });*/
+
         it("Test to movie GET /:_id_user/:id_movie", () => {
             return supertest(api).get(movie_api_path + "/Ana/killo").then((response) => {
                 expect(response.statusCode).toBe(200);
@@ -98,6 +114,14 @@ describe("Movies API tests", () => {
                 expect(response.body).toBeArrayOfSize(1);
             });
         });
+
+        /*it("Test to movie GET /:_id_user/:id_movie, not a match", () => {
+            return supertest(api).get(movie_api_path + "/Ana/killo").then((response) => {
+                expect(response.statusCode).toBe(404);
+                expect(dbFind).toHaveBeenNthCalledWith(5, {"id_user": "Killo", "id_movie": "killo"}, expect.any(Function));
+                expect(response.body).toBeArrayOfSize(0);
+            });
+        });*/
     });
 
     describe("Movies API POST tests", () => {
@@ -155,6 +179,15 @@ describe("Movies API tests", () => {
                 expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "4"}, {$set: {status_date: expect.any(Date)}}, expect.any(Function));
             });
         });
+
+
+        /*it("Test on PUT, the operation did not make any changes", () => {
+            return supertest(api).put(movie_api_path + "/dasgf")
+            .then((response) => {
+                expect(response.statusCode).toBe(404);
+                expect(dbPut).toHaveBeenNthCalledWith(3, {"_id": "dasgf"}, {$set: {status_date: expect.any(Date)}}, expect.any(Function));
+            });
+        });*/
     });
     
     describe("Tests on delete", () => {
@@ -165,6 +198,23 @@ describe("Movies API tests", () => {
                 expect(dbDelete).toHaveBeenNthCalledWith(1, {"_id": "1"}, expect.any(Function));
             });
         });
+
+        it("Test on Delete /:_id, failure", () => {
+            dbDelete.mockImplementationOnce((query, callback) => {
+                callback(true);
+            });
+            return supertest(api).delete(movie_api_path + "/1").then((response) => {
+                expect(response.statusCode).toBe(500);
+                expect(dbDelete).toHaveBeenNthCalledWith(2, {"_id": "1"}, expect.any(Function));
+            });
+        });
+
+        /*it("Test on Delete /:_id, did not make any changes", () => {
+            return supertest(api).delete(movie_api_path + "/dasgf").then((response) => {
+                expect(response.statusCode).toBe(404);
+                expect(dbDelete).toHaveBeenNthCalledWith(1, {"_id": "dasgf"}, expect.any(Function));
+            });
+        });*/
     });
 
 });
