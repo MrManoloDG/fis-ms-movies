@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const DB_URL = (process.env.MONGO_URL || 'mongodb://mongo:27017');
+const DB_URL = (process.env.MONGO_URL || 'mongodb://localhost:27017');
 
 const dbConnect = function() {
     console.log("Trying to connect: " + DB_URL);
