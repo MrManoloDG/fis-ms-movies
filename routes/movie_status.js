@@ -58,7 +58,7 @@ router.get('/:_id', (req,res) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
-        } else if(movieStatus === null){ //¿Aqui no debería ser movieStatus.length === 0?
+        } else if(movieStatus.length < 1){ 
             res.sendStatus(404);
         } else {
             res.status(200).send(movieStatus);
@@ -110,7 +110,7 @@ router.get('/user/:_id', (req,res) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
-        } else if(moviesStatus === null){ //¿Aqui no debería ser movieStatus.length === 0?
+        } else if(moviesStatus.length < 1){ 
             res.sendStatus(404);
         } else {
             res.status(200).send(moviesStatus);
@@ -126,7 +126,7 @@ router.get('/:_id_user/:_id_movie', (req,res) => {
         if(err) {
             console.log(Date() + " - " + err);
             res.sendStatus(500);
-        } else if(movieStatus === null){ //¿Aqui no debería ser movieStatus.length === 0?
+        } else if(movieStatus === null){
             res.sendStatus(404);
         } else {
             res.status(200).send(movieStatus);
