@@ -1,21 +1,44 @@
 const fetch = require("node-fetch");
 
-const isAuth = function(req,res, next){
-    let token = req.headers['authorization'];
+class AuthService{
+    static authenticate(req,res){
+        let body = {
+            'login': req.body.login,
+            'password': req.body.password
+        };
+        fetch("https://fis-backend-login.herokuapp.com/api/v1/authenticate",{
+            method: 'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        }).then(response => {
+            return response.json();
+        }).then(r =>{
+            res.status(200).send(r.token);
+        });
+    }
 
-    fetch("https://fis-backend-login.herokuapp.com/api/v1/checkToken",{
-        method: 'GET',
-        headers:{
-            'Content-Type': 'application/json',
-            'authorization': token
-        }
-    }).then(response => {
-        if(response.status === 200){
-            next()
-        }else {
-            res.sendStatus(403)
-        }
-    })
+    static isAuth(req,res, next){
+        let token = req.headers['authorization'];
+    
+        fetch("https://fis-backend-login.herokuapp.com/api/v1/checkToken",{
+            method: 'GET',
+            headers:{
+                'Content-Type': 'application/json',
+                'authorization': token
+            }
+        }).then(response => {
+            if(response.status === 200){
+                next()
+            }else {
+                res.sendStatus(403)
+            }
+        })
+    }
 }
 
-module.exports =  isAuth;
+
+
+
+module.exports =  AuthService;
