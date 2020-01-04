@@ -1,6 +1,12 @@
 const urljoin = require('url-join');
 const request = require('request-promise-native').defaults({json: true});
 
+var CommandsFactory = require('hystrixjs').commandFactory;
+var serviceCommand = CommandsFactory.getOrCreate("TMDB")
+    .run(request)
+    .build();
+
+
 class TMDBResource {
     // Urls are of type String[]. The function is meant to merge all the fragments for the TMDB API url.
     // The following method is just an implementation of the adapter pattern.
@@ -9,7 +15,8 @@ class TMDBResource {
     }
 
     static getRequest(url, options = {}){
-        return request.get(url, options);
+        var promise = serviceCommand.execute(url, options);
+        return promise;
     }
 
     /*
