@@ -11,7 +11,7 @@ describe("Tests for the TMDB API: ", () => {
         await new Promise(resolve => setTimeout(() => resolve(), 500));
     });
 
-    it("Test for GET Movie by query, query not included", () => {
+    it("Test for GET Movie by query, query included", () => {
         return supertest(api).get(full_path + "?query=Star Wars&release_date=100").then((response) => {
             expect(response.statusCode).toBe(200);
             expect(response.body).not.toHaveProperty("msg");
