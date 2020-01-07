@@ -23,10 +23,9 @@ before_script:
   - mongo mydb_test --eval 'db.createUser({user:"travis",pwd:"test",roles:["readWrite"]});'
 
 script: 
-  - sonar-scanner
   - npm test
   - docker build -t fis-ms-movies .
-
+  - sonar-scanner
 
 deploy:
   provider : script
