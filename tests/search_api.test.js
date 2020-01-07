@@ -21,7 +21,6 @@ describe("Tests for the TMDB API: ", () => {
     it("Test for GET Movie by query, query not included", () => {
         return supertest(api).get(full_path + '?release_date=100').then((response) => {
             expect(response.statusCode).toBe(422);
-            expect(response.body).toHaveProperty("msg");
         });
     });
 

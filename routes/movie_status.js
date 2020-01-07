@@ -12,7 +12,7 @@ router.get('/', (req,res) => {
     movie.find({},(err,moviesStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            res.status(500).send(err);
         } else {
             res.status(200).send(moviesStatus);
         }
@@ -27,9 +27,9 @@ router.post('/', (req,res) => {
         if(err) {
             console.log(Date() + " - " + err);
             if(err.name == 'ValidationError'){
-                res.sendStatus(400);
+                res.status(400).send(err);
             } else {
-                res.sendStatus(500);
+                res.status(500).send(err);
             }
         } else {
             res.sendStatus(201);
@@ -57,9 +57,9 @@ router.get('/:_id', (req,res) => {
     movie.find({_id: id}, (err,movieStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            res.status(500).send(err);
         } else if(movieStatus.length < 1){ 
-            res.sendStatus(404);
+            res.status(404).send(err);
         } else {
             res.status(200).send(movieStatus);
         }
@@ -75,9 +75,9 @@ router.put('/:_id', (req,res) => {
     movie.updateOne({_id: id }, {$set:movieStatus}, (err, nrep) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            res.status(500).send(err);
         } else if(nrep === 0){
-            res.sendStatus(404);
+            res.status(404).send(err);
         } else {
             res.status(200).send({
                 msg: 'Movie Status updated!'
@@ -92,9 +92,9 @@ router.delete('/:_id', (req,res) => {
     movie.deleteOne({_id : id}, (err,nrem) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            res.status(500).send(err);
         } else if(nrem === 0){
-            res.sendStatus(404);
+            res.status(404).send(err);
         } else {
             res.status(200).send({
                 msg: 'Movie Status deleted!'
@@ -109,9 +109,9 @@ router.get('/user/:_id', (req,res) => {
     movie.find({id_user: id}, (err,moviesStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            res.status(500).send(err);
         } else if(moviesStatus.length < 1){ 
-            res.sendStatus(404);
+            res.status(404).send(err);
         } else {
             res.status(200).send(moviesStatus);
         }
@@ -125,9 +125,9 @@ router.get('/:_id_user/:_id_movie', (req,res) => {
     movie.find({id_user: user_param, id_movie: movie_param}, (err,movieStatus) => {
         if(err) {
             console.log(Date() + " - " + err);
-            res.sendStatus(500);
+            res.status(500).send(err);
         } else if(movieStatus === null){
-            res.sendStatus(404);
+            res.status(404).send(err);
         } else {
             res.status(200).send(movieStatus);
         }

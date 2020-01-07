@@ -19,9 +19,9 @@ router.get('/', (req, res) => {
     const searchEntries = getUrl(query_params).replace(" ", "+");
 
     if(searchEntries.search(/query\=/) === -1){
-        res.status(422).send({
-            "msg": "This method needs a query attribute to operate. In case you do not have name, use the discovery operator."
-        });
+        res.status(422).send(
+            "This method needs a query attribute to operate. In case you do not have name, use the discovery operator."
+        );
     }
     
     else{
@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
             res.status(200).send(body);
         }).catch((err) => {
             console.log("Date : " + Date() + "-" + err + "-");
-            res.sendStatus(500);
+            res.status(500).send(err);
         });
     }
 });
@@ -44,7 +44,7 @@ router.get('/discover', (req, res) => {
             res.status(200).send(body);
         }).catch((err) => {
             console.log("Date : " + Date() + "-" + err + "-");
-            res.sendStatus(500);
+            res.status(500).send(err);
         });
 });
 
@@ -55,7 +55,7 @@ router.get('/:_id', (req, res) => {
             res.status(200).send(body);
         }).catch((err) => {
             console.log("Date : " + Date() + "-" + err + "-");
-            res.sendStatus(500);
+            res.status(500).send(err);
         });
 });
 
