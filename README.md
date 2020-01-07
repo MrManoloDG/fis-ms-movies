@@ -22,7 +22,8 @@ Los objetivos basicos que se han conseguido son:
 * Se ha integrado el microservicio con su propia base de datos *MongoDB*.
 * Se han realizado pruebas de integración para la comprobación de las conexiones con *MongoDB* y *TMDB API*.
 * En el apartado de *pull requests*, pueden verse las multiples *pull request* realizadas cada vez que se ha querido añadir funcionalidad, siguiendo el proceso *git flow*.
-* [Postman]()
+* [Postman-Localhost]()
+* [Postman-Heroku]()
 * Imagen *docker* en el *Dockerfile* en la carpeta main.
 * Las pruebas unitarias han sido aquellas realizadas con mocks, debido a la especificación de la API.
 * El despliegue, como se muestra en el fichero *TravisCI*, es automatico gracias al uso de *Heroku*. Como prueba, pueden comprobarse los multiples *builds* a lo largo de los *pull requests* hechos a la rama *master*.
@@ -30,6 +31,46 @@ Los objetivos basicos que se han conseguido son:
 ### Pruebas unitarias con *mocks*.
 
 Se han realizado pruebas con mocks para comprobar el correcto funcionamiento de la API. Para ello se han utilizado mocks siguiendo la práctica de *Jest* del curso.
+
+Estas pruebas se han hecho frente a la parte movie, dejando de lado la api usada para conectar con la api de TMDB.
+
+Ejemplo de mock:
+
+```javascript
+{"_id": "1", "id_user": "Juanito", "id_movie": "abc2", "status": "Completed", "status_date": new Date()}
+```
+
+Uso de sypOn y mockImplementation:
+
+```javascript
+dbFind = jest.spyOn(movie, "find");
+dbFind.mockImplementation((query, callback) => {
+   callback(null, mockMovies.filter((movie) => compare(query, movie)));
+});
+
+dbPost = jest.spyOn(movie, "create");
+dbPost.mockImplementationOnce((query, callback) => {
+   callback(false);
+}).mockImplementation((query, callback) => {
+   callback(true);
+});
+```
+
+Ejemplo de test (Post):
+
+```javascript
+test("POST / correctly defined", () => {
+   return supertest(api).post(movie_api_path + "/")
+      .set('authorization', token)
+      .send(
+          {id_user: 'Send', id_movie: "Send2", status: "Stopped"}
+      ).then((response) => {
+          expect(response.statusCode).toBe(201);
+   });
+});
+```
+
+Siguiendo con estas herramientas, hemos realizado tests unitarios para todas las operaciones recogidas en la API.
 
 ### Implementación de un *Circuit Breaker*, para la comunicación con TMDB Api.
 
@@ -72,6 +113,8 @@ La *api getaway* para el proyecto.
 [*API getaway*](https://github.com/Xiirf/FIS-API-Gateway) - Repositorio de la *API Getaway*.
 
 ### *Swagger*
+
+[Swagger API](https://app.swaggerhub.com/apis-docs/MrManoloDG/fis-movieStatus/1.0.0) - Api de movies escrita en *Swagger*.
 
 ### Front-End común
 
