@@ -22,8 +22,8 @@ Los objetivos basicos que se han conseguido son:
 * Se ha integrado el microservicio con su propia base de datos *MongoDB*.
 * Se han realizado pruebas de integración para la comprobación de las conexiones con *MongoDB* y *TMDB API*.
 * En el apartado de *pull requests*, pueden verse las multiples *pull request* realizadas cada vez que se ha querido añadir funcionalidad, siguiendo el proceso *git flow*.
-* [Postman-Localhost]()
-* [Postman-Heroku]()
+* [Postman-Localhost](https://www.getpostman.com/collections/6b5293f9933505a5c16c)
+* [Postman-Heroku](https://www.getpostman.com/collections/02057ed0a6e42df22913)
 * Imagen *docker* en el *Dockerfile* en la carpeta main.
 * Las pruebas unitarias han sido aquellas realizadas con mocks, debido a la especificación de la API.
 * El despliegue, como se muestra en el fichero *TravisCI*, es automatico gracias al uso de *Heroku*. Como prueba, pueden comprobarse los multiples *builds* a lo largo de los *pull requests* hechos a la rama *master*.
