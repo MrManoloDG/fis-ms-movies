@@ -11,7 +11,7 @@ El objetivo de este microservicio es gestionar la información referente a la in
 
 ## Nota a la que se presenta el proyecto.
 
-El proyecto aspira a la nota de 9. Los logros conseguidos en el mismo se exponen a continuación.
+El proyecto aspira a la nota de 7. Los logros conseguidos en el mismo se exponen a continuación.
 
 ### Objetivos básicos del proyecto
 
@@ -118,5 +118,5 @@ La *api getaway* para el proyecto.
 
 ### Front-End común
 
-
+[Front-End](https://github.com/Xiirf/FIS-Frontend) - Front-End común de todo el grupo.
 
