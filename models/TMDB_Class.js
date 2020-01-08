@@ -1,11 +1,29 @@
 const urljoin = require('url-join');
 const request = require('request-promise-native').defaults({json: true});
 
+const NodeCache = require('node-cache');
+
 var CommandsFactory = require('hystrixjs').commandFactory;
 var serviceCommand = CommandsFactory.getOrCreate("TMDB")
     .run(request)
     .build();
 
+const tmdb_cache = new NodeCache({ checkperiod: 120, clone: false });
+
+
+function cacheUpdate(url, options) {
+    var promise = serviceCommand.execute(url, options);
+    console.log("Añadiendo a cache");
+    body = promise[0];
+    tmdb_cache.set(url);
+    return promise;
+}
+
+function requestTMDB(url, options){
+    var cached_response = tmdb_cache.get(url);
+    console.log("Entrando a cache");
+    return cached_response != undefined ? cached_response : cacheUpdate(url, options);
+}
 
 class TMDBResource {
     // Urls are of type String[]. The function is meant to merge all the fragments for the TMDB API url.
@@ -15,8 +33,7 @@ class TMDBResource {
     }
 
     static getRequest(url, options = {}){
-        var promise = serviceCommand.execute(url, options);
-        return promise;
+        return requestTMDB(url, options);
     }
 
     /*
@@ -51,7 +68,8 @@ class TMDBResource {
             TMDBResource.getApiKey(),
             TMDBResource.languageTMDB()
         ];
-        return TMDBResource.getRequest(TMDBResource.URLJoin(urls));
+        let aux = TMDBResource.URLJoin(urls);
+        return TMDBResource.getRequest(aux);
     }
 
     static searchMovies(searchEntries){
