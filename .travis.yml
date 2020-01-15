@@ -25,7 +25,6 @@ before_script:
 script: 
   - npm test
   - docker build -t fis-ms-movies .
-  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then sonar-scanner; fi' # sonar only on non-PRs
 
 deploy:
   provider : script
