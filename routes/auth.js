@@ -26,7 +26,7 @@ class AuthService{
             method: 'GET',
             headers:{
                 'Content-Type': 'application/json',
-                'authorization': token
+                'authorization': token.replace('Bearer ','')
             }
         }).then(response => {
             if(response.status === 200){
