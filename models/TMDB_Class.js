@@ -1,11 +1,35 @@
 const urljoin = require('url-join');
 const request = require('request-promise-native').defaults({json: true});
 
+const NodeCache = require('node-cache');
+
 var CommandsFactory = require('hystrixjs').commandFactory;
 var serviceCommand = CommandsFactory.getOrCreate("TMDB")
     .run(request)
     .build();
 
+const tmdb_cache = new NodeCache({ checkperiod: 120, clone: false });
+
+function hystrix(url, options){
+    var promise = serviceCommand.execute(url, options);
+    return promise; 
+}
+
+function cacheUpdate(url, options) {
+    return hystrix(url, options).then((body) => {
+        console.log("Actualizando cache");
+        tmdb_cache.set(url, body);
+        return body;
+    });
+}
+
+function requestTMDB(url, options){
+    return new Promise(function (resolve){
+        var cached_response = tmdb_cache.get(url);
+        console.log("Entrando a cache");
+        resolve (cached_response != undefined ? cached_response : cacheUpdate(url, options))
+    });
+}
 
 class TMDBResource {
     // Urls are of type String[]. The function is meant to merge all the fragments for the TMDB API url.
@@ -15,8 +39,7 @@ class TMDBResource {
     }
 
     static getRequest(url, options = {}){
-        var promise = serviceCommand.execute(url, options);
-        return promise;
+        return requestTMDB(url, options);
     }
 
     /*
