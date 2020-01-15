@@ -1,7 +1,6 @@
 # Microservicio Gestor de Películas.
 
 [![Build Status](https://travis-ci.org/MrManoloDG/fis-ms-movies.svg?branch=master)](https://travis-ci.org/MrManoloDG/fis-ms-movies)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=mrmanolo%3Afis-ms-movies&metric=alert_status)](https://sonarcloud.io/dashboard?id=mrmanolo%3Afis-ms-movies)
 
 Este microservicio se ha realizado como parte del proyecto de la asignatura de fundamentos de ingeniería del software del Master en Cloud, Datos y TIC de la Universidad de Sevilla.
 
@@ -11,7 +10,7 @@ El objetivo de este microservicio es gestionar la información referente a la in
 
 ## Nota a la que se presenta el proyecto.
 
-El proyecto aspira a la nota de 7. Los logros conseguidos en el mismo se exponen a continuación.
+El proyecto aspira a la nota de 9. Los logros conseguidos en el mismo se exponen a continuación.
 
 ### Objetivos básicos del proyecto
 
@@ -29,7 +28,7 @@ Los objetivos basicos que se han conseguido son:
 
 ### Pruebas unitarias con *mocks*.
 
-Se han realizado pruebas con mocks para comprobar el correcto funcionamiento de la API. Para ello se han utilizado mocks siguiendo la práctica de *Jest* del curso.
+Se han realizado pruebas con mocks para comprobar el correcto funcionamiento de la API. Para ello se han utilizado mocks siguiendo la práctica de *Jest* del curso. Archivo: [Tests de mocks](tests/server.test.js)
 
 Estas pruebas se han hecho frente a la parte movie, dejando de lado la api usada para conectar con la api de TMDB.
 
@@ -73,7 +72,7 @@ Siguiendo con estas herramientas, hemos realizado tests unitarios para todas las
 
 ### Implementación de un *Circuit Breaker*, para la comunicación con TMDB Api.
 
-Para la comunicación con la api de TMDB, se ha decidido implementar un circuit breaker utilizando la librería "hystrixjs". Aqui la factoría para los objetos observables.
+Para la comunicación con la api de TMDB, se ha decidido implementar un circuit breaker utilizando la librería "hystrixjs". Aqui la factoría para los objetos observables. Archivo: [Clase TMDB](models/TMDB_Class.js)
 
 Esta parte correspondería a la creación de la factoría para crear los hilos que llamarán al servicio de TMDB:
 
@@ -87,9 +86,33 @@ var serviceCommand = CommandsFactory.getOrCreate("TMDB")
 Y esta sería la llamada a la ejecución:
 
 ```javascript
-static getRequest(url, options = {}){
+function hystrix(url, options){
     var promise = serviceCommand.execute(url, options);
-    return promise;
+    return promise; 
+}
+```
+
+### Implementación de la cache para la api de TMDB
+
+Hemos usado la librería node *node-cache* para la implementación de un sistema de cache para las consultas de TMDB. Esta ademas se ha combinado con la implementación del *circuit breaker*.
+
+Aquí las funciones que se encargan de consultar y actualizar la cache. Archivo: [Clase TMDB](models/TMDB_Class.js)
+
+```javascript
+function cacheUpdate(url, options) {
+    return hystrix(url, options).then((body) => {
+        console.log("Actualizando cache");
+        tmdb_cache.set(url, body);
+        return body;
+    });
+}
+
+function requestTMDB(url, options){
+    return new Promise(function (resolve){
+        var cached_response = tmdb_cache.get(url);
+        console.log("Entrando a cache");
+        resolve (cached_response != undefined ? cached_response : cacheUpdate(url, options))
+    });
 }
 ```
 
@@ -103,7 +126,7 @@ En server.js
 app.use(BASE_API_PATH +'/movies_status',AuthService.isAuth,movieStatus);
 ```
 
-Este llama al fichero *./routes/auth* que se encarga de volver a comprobar la autenticación.
+Este llama al fichero [*./routes/auth*](routes/auth.js) que se encarga de volver a comprobar la autenticación.
 
 ### *API Getaway*
 
