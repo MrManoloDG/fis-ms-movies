@@ -8,6 +8,10 @@ Este microservicio se ha realizado como parte del proyecto de la asignatura de f
 
 El objetivo de este microservicio es gestionar la información referente a la interacción de los usuario con las peliculas extraidas de la API de TMDB. Esta interacción consiste en la selección de un estado de una pelicula para un usuario concreto. Dicho usuario podrá marcar las peliculas como pendientes o vistas.
 
+## Aplicación desplegada
+
+[https://fis-ms-movies.herokuapp.com/](https://fis-ms-movies.herokuapp.com/)
+
 ## Nota a la que se presenta el proyecto.
 
 El proyecto aspira a la nota de 9. Los logros conseguidos en el mismo se exponen a continuación.
