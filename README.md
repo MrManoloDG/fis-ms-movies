@@ -140,7 +140,7 @@ La *api getaway* para el proyecto.
 
 ### Front-End común
 
-En el Front-End común se ha desarrollado los componentes respectivos al buscador, lista de películas, componente de paginación para esta lista, y vista en detalle de cada película. 
+En el Front-End común se ha desarrollado los componentes respectivos al buscador, lista de películas, componente de paginación para esta lista, y vista en detalle de cada película. Cada componente tiene su fichero de tests, con el que se prueba que el componente se renderiza con sus características. 
 
 En la vista detallada de la película se hace uso de un selector para cambiar el estado y enviarlo a la API, cuando se selecciona “No visto” se borra ese estado de la base de datos para ahorrar memoria. Ya que por defecto cuando no se encuentra el estado en la base de datos, este es “No visto”.
 
